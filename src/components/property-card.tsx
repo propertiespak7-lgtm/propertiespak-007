@@ -1,0 +1,297 @@
+import { ResilientImage } from "@/components/resilient-image";
+import Link from "next/link";
+import { IconArea, IconArrowRight, IconBath, IconBed, IconEye, IconPin } from "@/components/icons";
+import { FavoriteButton } from "@/components/favorite-button";
+import { CompareToggle } from "@/components/compare-toggle";
+import type { Property } from "@/db/schema";
+import { formatArea, formatNumber, formatPrice } from "@/lib/format";
+import { CATEGORY_LABELS } from "@/lib/constants";
+import { computePropertyScore, pricePerSqft } from "@/lib/score";
+import { BlueTick } from "@/components/verified-badge";
+import type { PropertyWithDealer } from "@/lib/queries";
+
+export function purposeBadge(property: Pick<Property, "purpose" | "isNewProject">) {
+  if (property.isNewProject) return { label: "New Project", className: "bg-[#0D382A] text-white" };
+  if (property.purpose === "rent") return { label: "For Rent", className: "bg-[#0D382A] text-white" };
+  return { label: "For Sale", className: "bg-[#0D382A] text-white" };
+}
+
+/** Distinct pastel colour per property type on the featured card (House, Villa, Apartment, Plot …). */
+const TYPE_PILL: Record<string, string> = {
+  house: "bg-[#CFF7E1] text-[#0F6B45]",
+  villa: "bg-[#FFE0E6] text-[#B0234A]",
+  bungalow: "bg-[#FFE9D6] text-[#B4561A]",
+  farmhouse: "bg-[#E8F6C8] text-[#4D6B12]",
+  apartment: "bg-[#E0E9FF] text-[#2F4FA0]",
+  flat: "bg-[#E0E9FF] text-[#2F4FA0]",
+  penthouse: "bg-[#E6E0FF] text-[#4B3BA6]",
+  plot: "bg-[#FDF1C6] text-[#8A5A00]",
+  land: "bg-[#FDF1C6] text-[#8A5A00]",
+  shop: "bg-[#F1E6FF] text-[#6A3DB0]",
+  office: "bg-[#DDF4F8] text-[#11677A]",
+  building: "bg-[#E6ECF2] text-[#334B63]",
+  commercial: "bg-[#F1E6FF] text-[#6A3DB0]",
+  warehouse: "bg-[#ECE7E1] text-[#5C4A36]",
+};
+function typePillClass(property: Pick<Property, "propertyType" | "category">) {
+  const type = property.propertyType.toLowerCase();
+  const byType = Object.keys(TYPE_PILL).find((key) => type.includes(key));
+  return TYPE_PILL[byType ?? property.category] ?? "bg-white/95 text-[#0D382A]";
+}
+
+function formatPkrNumeric(price: number | string, purpose: string): { main: string } {
+  const num = typeof price === "number" ? price : Number(price);
+  return { main: formatPrice(num, purpose === "rent" ? "month" : "total") };
+}
+
+export function PropertyCard({
+  property,
+  priority = false,
+  className = "",
+  compact = false,
+  variant = "default",
+  mobileFeaturedLook = false,
+  dateLabel,
+}: {
+  property: Property | PropertyWithDealer;
+  priority?: boolean;
+  className?: string;
+  compact?: boolean;
+  dateLabel?: string;
+  /** "featured": type + purpose pills on the left and a "Featured" pill on the right (homepage premium rail). */
+  variant?: "default" | "featured";
+  /** Match the "Premium Properties For You" pill/card look on mobile viewports only. */
+  mobileFeaturedLook?: boolean;
+}) {
+  const featuredLook = variant === "featured";
+  const dealerVerified = Boolean((property as PropertyWithDealer).dealerVerified);
+  const listingVerified = dealerVerified || Boolean(property.verified);
+  const badge = purposeBadge(property);
+  const score = computePropertyScore(property);
+  const pps = pricePerSqft(property);
+  const pkr = formatPkrNumeric(property.price, property.purpose);
+  const areaLabel =
+    property.areaSqft > 0
+      ? `${Math.round(property.areaSqft).toLocaleString("en-PK")} sq ft`
+      : formatArea(property.areaValue, property.areaUnit);
+  const descriptorArea =
+    property.areaValue > 0
+      ? formatArea(property.areaValue, property.areaUnit)
+      : property.areaSqft > 0
+        ? formatArea(property.areaSqft, "sqft")
+        : "";
+  const propertyDescriptor = [
+    descriptorArea,
+    property.propertyType,
+  ]
+    .filter(Boolean)
+    .join(" ") + ` • ${property.locationArea || property.cityName}`;
+  const titleClass = compact
+    ? "line-clamp-2 text-[0.88rem]"
+    : "line-clamp-2 text-[0.98rem]";
+
+  return (
+    <article
+      className={[
+        "group relative flex h-full min-w-0 max-w-full flex-col overflow-hidden rounded-xl border border-[#E6EAE7] bg-white shadow-[0_6px_22px_-14px_rgba(8,34,26,0.18)] transition-all duration-300 hover:-translate-y-1 hover:border-[#C9D6CE] hover:shadow-[0_16px_34px_-18px_rgba(8,34,26,0.28)]",
+        className,
+      ].join(" ")}
+    >
+      <Link
+        href={`/property/${property.slug}`}
+        className={`zoom-frame relative block overflow-hidden bg-soft ${compact ? "aspect-[16/10]" : "aspect-[4/3]"}`}
+      >
+        <ResilientImage
+          src={property.images[0] || property.coverImage || "/images/fallbacks/property-1-hd.webp"}
+          alt={`${property.title} — ${property.propertyType} in ${property.locationArea}, ${property.cityName}`}
+          width={1200}
+          height={800}
+          loading={priority ? "eager" : "lazy"}
+          decoding="async"
+          className="h-full w-full object-cover"
+        />
+        <span className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
+      </Link>
+
+      {featuredLook ? (
+        <>
+          <div className="pointer-events-none absolute left-2.5 top-2.5 flex max-w-[calc(100%-112px)] flex-wrap items-center gap-1.5">
+            <span className={`property-card-type-photo-pill rounded-full px-2.5 py-[3px] font-sans text-[0.7rem] font-semibold shadow-sm ${typePillClass(property)}`}>
+              {property.propertyType}
+            </span>
+            <span
+              className={`rounded-full px-2.5 py-[3px] font-sans text-[0.7rem] font-semibold text-white shadow-sm ${
+                property.isNewProject ? "bg-[#0D382A]" : property.purpose === "rent" ? "bg-[#F26B3A]" : "bg-[#0B4A2B]"
+              }`}
+            >
+              {badge.label}
+            </span>
+          </div>
+          <div className="absolute right-2.5 top-2.5 flex flex-col items-end gap-1.5">
+            <span className="pointer-events-none inline-flex items-center gap-1 rounded-full bg-[#F26B3A] px-2.5 py-[3px] font-sans text-[0.7rem] font-semibold text-white shadow-sm" data-testid="featured-pill">
+              <svg viewBox="0 0 20 20" className="h-3 w-3" fill="currentColor" aria-hidden="true"><path d="M10 1.8l2.47 5.01 5.53.8-4 3.9.94 5.5L10 14.42 5.06 17.01 6 11.5 2 7.6l5.53-.8L10 1.8z" /></svg>
+              Featured
+            </span>
+            <FavoriteButton propertyId={property.id} title={property.title} />
+          </div>
+        </>
+      ) : (
+        <>
+          <div className="property-card-pills-mobile pointer-events-none absolute left-2.5 top-2.5 hidden max-w-[calc(100%-112px)] flex-wrap items-center gap-1.5">
+            <span
+              className={`rounded-full px-2.5 py-[3px] font-sans text-[0.7rem] font-semibold text-white shadow-sm ${
+                property.isNewProject ? "bg-[#0D382A]" : property.purpose === "rent" ? "bg-[#F26B3A]" : "bg-[#0B4A2B]"
+              }`}
+            >
+              {badge.label}
+            </span>
+          </div>
+          <div
+            className={`property-card-badges-desktop absolute flex flex-wrap items-center gap-1.5 ${
+              compact ? "left-2.5 top-2.5 max-w-[calc(100%-60px)]" : "left-3.5 top-3.5"
+            }`}
+          >
+            <span
+              className={`rounded-md px-2.5 py-1 font-sans text-[0.7rem] font-semibold tracking-[0.03em] shadow-sm ${badge.className}`}
+            >
+              {badge.label}
+            </span>
+            {!compact && listingVerified && (
+              <span className="inline-flex items-center gap-1 rounded-md bg-white/95 px-2 py-1 font-sans text-[0.68rem] font-bold uppercase tracking-[0.08em] text-[#0D382A] shadow-sm">
+                <BlueTick className="h-3.5 w-3.5" /> {dealerVerified ? "Verified dealer" : "Verified"}
+              </span>
+            )}
+          </div>
+
+          <div className={`absolute flex flex-col items-end gap-1.5 ${compact ? "right-2.5 top-2.5" : "right-3.5 top-3.5"}`}>
+            {mobileFeaturedLook && Boolean(property.featured) && (
+              <span className="property-card-pills-mobile pointer-events-none hidden items-center gap-1 rounded-full bg-[#F26B3A] px-2.5 py-[3px] font-sans text-[0.7rem] font-semibold text-white shadow-sm">
+                <svg viewBox="0 0 20 20" className="h-3 w-3" fill="currentColor" aria-hidden="true"><path d="M10 1.8l2.47 5.01 5.53.8-4 3.9.94 5.5L10 14.42 5.06 17.01 6 11.5 2 7.6l5.53-.8L10 1.8z" /></svg>
+                Featured
+              </span>
+            )}
+            <FavoriteButton propertyId={property.id} title={property.title} />
+            {!compact && <CompareToggle propertyId={property.id} title={property.title} />}
+          </div>
+        </>
+      )}
+
+      <div className={`property-card-content flex min-w-0 flex-1 flex-col ${compact ? "p-3.5" : "p-5"}`}>
+        <div className="property-card-price-block flex min-w-0 items-center justify-between gap-2">
+          <p className={`min-w-0 truncate font-sans font-bold leading-tight tracking-[-0.02em] text-[#0D261D] ${compact ? "text-[1rem]" : "text-[1.2rem]"}`}>
+            {pkr.main}
+          </p>
+          <span className="property-card-type-detail-pill hidden" aria-label={`Property type: ${property.propertyType}`}>
+            <span className="property-card-type-detail-dot" aria-hidden="true" />
+            <span className="truncate">{property.propertyType}</span>
+          </span>
+        </div>
+
+        <h3 className={`property-card-title mt-1.5 font-sans font-bold leading-snug text-[#0D261D] ${titleClass}`}>
+          <Link
+            href={`/property/${property.slug}`}
+            title={property.title}
+            aria-label={`${property.title}. ${propertyDescriptor}`}
+            className="transition-colors hover:text-[#136F46]"
+          >
+            {propertyDescriptor}
+          </Link>
+        </h3>
+
+        {!compact && (
+          <p className="property-card-price-details mt-1 text-[0.72rem] text-ink-muted">
+            {pps > 0 ? `≈ PKR ${pps.toLocaleString("en-PK")} / sq ft` : CATEGORY_LABELS[property.category] ?? property.propertyType}
+            {" · "}
+            <span className="font-semibold text-[#0D382A]">Score {score.overall}/10</span>
+          </p>
+        )}
+
+        <div className="property-card-facts mt-auto pt-2.5">
+          <div className="hairline border-[#EBF0EC]" />
+          <div
+            className={`property-card-specs flex flex-wrap items-center justify-between gap-y-1 font-medium text-[#4F6158] ${
+              compact ? "mt-2.5 gap-x-2 text-[0.72rem]" : "mt-3 gap-x-3.5 text-[0.8rem]"
+            }`}
+          >
+            {property.bedrooms > 0 && (
+              <span className="inline-flex items-center gap-1 whitespace-nowrap">
+                <IconBed className="h-3.5 w-3.5 text-[#687A71]" /> {property.bedrooms} Beds
+              </span>
+            )}
+            {property.bathrooms > 0 && (
+              <span className="inline-flex items-center gap-1 whitespace-nowrap">
+                <IconBath className="h-3.5 w-3.5 text-[#687A71]" /> {property.bathrooms} Baths
+              </span>
+            )}
+            <span className="inline-flex items-center gap-1 whitespace-nowrap">
+              <IconArea className="h-3.5 w-3.5 text-[#687A71]" /> {areaLabel}
+            </span>
+          </div>
+
+          {dateLabel && <p className="property-card-date-label mt-2 text-[0.68rem] text-[#687A71]">{dateLabel}</p>}
+
+          {!compact && (
+            <div className="mt-3.5 flex items-center justify-between gap-3">
+              <Link
+                href={`/property/${property.slug}`}
+                className="inline-flex items-center gap-1.5 font-sans text-[0.84rem] font-semibold text-[#0D382A] transition-colors hover:text-[#B8893D]"
+              >
+                View Details
+                <IconArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+              </Link>
+              <span className="flex items-center gap-3 text-[0.75rem] text-ink-muted">
+                {property.negotiable && <span className="hidden sm:inline">Negotiable</span>}
+                <span className="inline-flex items-center gap-1">
+                  <IconEye className="h-3.5 w-3.5" /> {formatNumber(property.views)}
+                </span>
+              </span>
+            </div>
+          )}
+        </div>
+      </div>
+    </article>
+  );
+}
+
+export function PropertyRow({ property }: { property: Property }) {
+  const badge = purposeBadge(property);
+  return (
+    <article className="group flex gap-4 rounded-xl border border-soft bg-white p-3 transition-all duration-300 hover:border-[#C9D6CE] hover:shadow-card">
+      <Link
+        href={`/property/${property.slug}`}
+        className="zoom-frame relative block h-[104px] w-[140px] shrink-0 overflow-hidden rounded-lg bg-soft"
+      >
+        <ResilientImage
+          src={property.coverImage}
+          alt={`${property.title}, ${property.locationArea}`}
+          width={420}
+          height={312}
+          loading="lazy"
+          decoding="async"
+          className="h-full w-full object-cover"
+        />
+        <span className={`absolute left-2 top-2 rounded-md px-1.5 py-0.5 text-[0.7rem] font-semibold ${badge.className}`}>
+          {badge.label}
+        </span>
+      </Link>
+      <div className="flex min-w-0 flex-1 flex-col">
+        <p className="font-sans text-[1rem] font-bold leading-none text-[#0D261D]">
+          {formatPrice(property.price, property.priceUnit)}
+        </p>
+        <h3 className="mt-1.5 line-clamp-2 text-[0.9375rem] font-semibold leading-snug text-[#0D261D]">
+          <Link href={`/property/${property.slug}`} className="hover:text-[#0D382A]">
+            {property.title}
+          </Link>
+        </h3>
+        <p className="mt-1 flex items-center gap-1.5 truncate text-[0.8125rem] text-ink-muted">
+          <IconPin className="h-3.5 w-3.5 text-[#0D382A]" />
+          {property.locationArea}, {property.cityName}
+        </p>
+        <p className="mt-auto pt-2 text-[0.75rem] font-medium text-ink-muted">
+          {CATEGORY_LABELS[property.category] ?? property.propertyType}
+          {property.bedrooms > 0 ? ` · ${property.bedrooms} beds` : ""} · {formatArea(property.areaValue, property.areaUnit)}
+        </p>
+      </div>
+    </article>
+  );
+}
