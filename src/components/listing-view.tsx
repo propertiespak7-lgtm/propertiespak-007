@@ -3,7 +3,6 @@ import { FiltersBar, type TownGroup } from "@/components/filters-bar";
 import { Pagination } from "@/components/pagination";
 import { PageHero } from "@/components/page-hero";
 import { PropertyCard } from "@/components/property-card";
-import { Reveal } from "@/components/reveal";
 import type { Crumb } from "@/components/breadcrumbs";
 import { RecentSearchResultsTracker } from "@/components/recent-properties-tracker";
 import { JsonLd } from "@/components/json-ld";
@@ -170,9 +169,9 @@ export async function ListingView({
             <>
               <div className="property-results-grid mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                 {result.items.map((property, index) => (
-                  <Reveal key={property.id} delay={index * 40}>
+                  <div key={property.id}>
                     <PropertyCard property={property} priority={index < 4} />
-                  </Reveal>
+                  </div>
                 ))}
               </div>
 

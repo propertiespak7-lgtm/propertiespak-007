@@ -6,6 +6,9 @@ const CANONICAL_HOST = "dha.wordbitx.pk";
 const nextConfig: NextConfig = {
   // Lets the sandboxed live preview (proxied under *.e2b.app) load dev assets.
   allowedDevOrigins: ["*.e2b.app", "localhost", "127.0.0.1"],
+  // Vercel can route deployment-tagged assets and RSC requests to the matching
+  // deployment when Skew Protection is enabled for the project.
+  ...(process.env.VERCEL_DEPLOYMENT_ID ? { deploymentId: process.env.VERCEL_DEPLOYMENT_ID } : {}),
   poweredByHeader: false,
   compress: true,
   images: {
