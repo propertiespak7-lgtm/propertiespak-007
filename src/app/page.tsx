@@ -31,6 +31,7 @@ import {
   searchProperties,
 } from "@/lib/queries";
 import { buildMetadata } from "@/lib/seo";
+import { SITE } from "@/lib/constants";
 import { ClientReviewsSection } from "@/components/reviews-section";
 import { HomeExploreProperties } from "@/components/home-explore-properties";
 import { RecentProperties } from "@/components/recent-properties";
@@ -121,6 +122,8 @@ export default async function HomePage({ searchParams }: HomePageProps) {
 
   return (
     <div className="home-page">
+      {/* Next normalizes root metadata URLs without a slash; keep the homepage canonical explicit. */}
+      <link rel="canonical" href={`${SITE.url}/`} />
       <Hero key={citySlug ?? "global"} stats={{ ...heroStats, maps: DHA_SOCIETY_MAPS.length + DEEP_ZOOM_MAPS.length }} citySlug={citySlug} />
 
       {/* Desktop keeps its original premium-first order; mobile reorders these two rails. */}

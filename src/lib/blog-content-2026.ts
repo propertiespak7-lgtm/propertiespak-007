@@ -497,7 +497,7 @@ export const BLOG_POSTS_2026: BlogPost2026[] = [
       {
         question: "Where can I download society maps in Pakistan?",
         answer:
-          "Properties Pak offers 57+ downloadable society PDF maps at propertiespak.com/maps and HD maps of 37 DHA societies at propertiespak.com/maps/dha-societies.",
+          "Properties Pak offers 57+ downloadable society PDF maps at dha.wordbitx.pk/maps and HD maps of 37 DHA societies at dha.wordbitx.pk/maps/dha-societies.",
       },
     ],
   },
@@ -546,7 +546,7 @@ export const BLOG_POSTS_2026: BlogPost2026[] = [
       },
       {
         question: "Where can I see the DHA Lahore map with plot numbers?",
-        answer: "Open any phase at propertiespak.com/maps/dha-societies?city=Lahore and zoom in to read sector and plot numbers on the HD map.",
+        answer: "Open any phase at dha.wordbitx.pk/maps/dha-societies?city=Lahore and zoom in to read sector and plot numbers on the HD map.",
       },
       {
         question: "Which DHA Lahore phase is best to buy in?",

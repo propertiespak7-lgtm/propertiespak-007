@@ -16,7 +16,7 @@ The platform is **technically ready for indexing today**. Every core system Goog
 | Sitemap index | ✅ `/sitemap-index.xml` lists 19 child sitemaps (master + 11 topical + 8 city files) with fresh `lastmod` |
 | Master sitemap | ✅ `/sitemap.xml` — **659 URLs** (all listing, city, society, town, dealer, project, blog, tool, landing pages) |
 | Per-city sitemaps | ✅ `/sitemaps/city/{city}.xml` (Lahore, Islamabad, Karachi, Rawalpindi, Faisalabad, Multan, Gujranwala, Peshawar) |
-| Canonical tags | ✅ Self-referencing absolute canonical on every page (`https://propertiespak.com`) |
+| Canonical tags | ✅ Self-referencing absolute canonical on every page (`https://dha.wordbitx.pk`) |
 | Host canonicalisation | ✅ `www` and legacy hosts 301 → apex in production (`next.config.ts`) |
 | Titles / meta | ✅ Keyword-first titles, unique descriptions, `en-PK` locale |
 | Structured data | ✅ `RealEstateAgent` + `WebSite` + `SearchAction` (sitewide), `RealEstateListing` + `Offer` + `BreadcrumbList` (listings), plus City/ItemList/FAQPage on hubs and guides |
@@ -30,18 +30,18 @@ The platform is **technically ready for indexing today**. Every core system Goog
 **One URL to paste in Search Console → Sitemaps:**
 
 ```
-https://propertiespak.com/sitemap-index.xml
+https://dha.wordbitx.pk/sitemap-index.xml
 ```
 
-That single index reference covers all 19 files (listings, cities, societies, dealers, projects, blog, tools, keywords, pages). Submitting the master `https://propertiespak.com/sitemap.xml` as well is harmless but optional.
+That single index reference covers all 19 files (listings, cities, societies, dealers, projects, blog, tools, keywords, pages). Submitting the master `https://dha.wordbitx.pk/sitemap.xml` as well is harmless but optional.
 
 ### Step-by-step (recommended: Domain property)
 
-1. Search Console → **Add property → Domain** → enter `propertiespak.com`.
+1. Search Console → **Add property → Domain** → enter `dha.wordbitx.pk`.
 2. Google shows a **TXT record** — add it at your DNS provider (Cloudflare/Namecheap/GoDaddy): host `@`, type `TXT`, value `google-site-verification=…`. Verify. *This covers www, http→https and every subdomain in one shot.*
 3. **Sitemaps → enter `/sitemap-index.xml` → Submit.** "Success" with N discovered URLs is expected within days.
 4. Settings → **International targeting**: Pakistan. Enable **email alerts**.
-5. **URL Inspection** (top bar) → paste `https://propertiespak.com/` → **Request indexing**. Repeat for `/properties`, one city hub, and 3–5 strong listings to seed discovery.
+5. **URL Inspection** (top bar) → paste `https://dha.wordbitx.pk/` → **Request indexing**. Repeat for `/properties`, one city hub, and 3–5 strong listings to seed discovery.
 6. Alternative if DNS is inconvenient: **URL prefix** property → HTML tag → copy the `content="…"` token → set `NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION=<token>` in Vercel env vars → redeploy → Verify.
 7. **Bing Webmaster Tools**: import from Search Console (one click), submit the same index.
 8. After launch, check weekly: Pages (indexed count), Sitemaps (errors), Core Web Vitals, and use **URL Inspection → Request indexing** for every new listing batch.

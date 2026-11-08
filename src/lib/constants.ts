@@ -3,14 +3,14 @@ export const SITE = {
   /** Brand name with the country suffix used in titles and structured data. */
   fullName: "Properties Pak — Pakistan Real Estate Marketplace",
   tagline: "Buy · Sell · Rent in Pakistan",
-  url: "https://propertiespak.com",
-  /** Apex host is canonical; www and legacy hosts 301 to it (see next.config.ts). */
-  host: "propertiespak.com",
+  url: "https://dha.wordbitx.pk",
+  /** Live host is canonical; www and legacy hosts 301 to it (see next.config.ts). */
+  host: "dha.wordbitx.pk",
   description:
     "Properties Pak is Pakistan's property marketplace for verified listings — search houses, apartments, plots, luxury villas, commercial property and new housing projects for sale and rent in Lahore, Islamabad, Karachi, Rawalpindi, Faisalabad, Multan, Gujranwala and Peshawar.",
   company: "WordbitX Software Company",
   companyUrl: "https://wordbitx.com/",
-  companyEmail: "info@propertiespak.com",
+  companyEmail: "info@wordbitx.com",
   companyPhone: "+92 325 1888841",
   companyPhoneUs: "+1 (929) 619-7699",
   /**
@@ -52,7 +52,7 @@ export const SITE = {
     wordbitxHome: "https://wordbitx.com/",
     wordbitxServices: "https://wordbitx.com/",
     wordbitxContact: "https://wordbitx.com/",
-    officialPlatform: "https://propertiespak.com",
+    officialPlatform: "https://dha.wordbitx.pk",
   },
 };
 

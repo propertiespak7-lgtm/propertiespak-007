@@ -42,7 +42,7 @@ export function buildMetadata({
   ogKicker,
   ogSubtitle,
 }: MetaInput): Metadata {
-  const url = `${SITE.url}${path === "/" ? "" : path}`;
+  const url = `${SITE.url}${path}`;
   // Pages without their own photography get a branded, title-aware card from
   // the OG route; the homepage uses the hero photograph social card.
   const og =
@@ -57,7 +57,7 @@ export function buildMetadata({
     keywords,
     robots: robots ?? { index: true, follow: true, googleBot: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1 } },
     alternates: {
-      canonical: url,
+      canonical: path === "/" ? undefined : url,
       languages: { "en-PK": url, "x-default": url },
     },
     openGraph: {
@@ -166,7 +166,7 @@ export function organizationJsonLd() {
     slogan: SITE.tagline,
     isAccessibleForFree: true,
     disambiguatingDescription:
-      "Properties Pak (propertiespak.com) is Pakistan's property marketplace, engineered by WordbitX Software Company (https://wordbitx.com/).",
+      "Properties Pak (dha.wordbitx.pk) is Pakistan's property marketplace, engineered by WordbitX Software Company (https://wordbitx.com/).",
   };
 }
 

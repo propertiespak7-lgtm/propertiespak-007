@@ -1,7 +1,7 @@
 import type { NextConfig } from "next";
 
 /** Canonical production host. Everything else 301s here in production. */
-const CANONICAL_HOST = "propertiespak.com";
+const CANONICAL_HOST = "dha.wordbitx.pk";
 
 const nextConfig: NextConfig = {
   // Lets the sandboxed live preview (proxied under *.e2b.app) load dev assets.
@@ -19,7 +19,7 @@ const nextConfig: NextConfig = {
     // host is already correct, so only path redirects run there.
     const hostRedirects: { source: string; has: { type: "host"; value: string }[]; destination: string; permanent: boolean }[] = [];
     if (process.env.NODE_ENV === "production") {
-      for (const host of ["www.propertiespak.com", "property.wordbitxtech.com", "www.property.wordbitxtech.com"]) {
+      for (const host of ["property.wordbitxtech.com", "www.property.wordbitxtech.com"]) {
         hostRedirects.push({
           source: "/:path*",
           has: [{ type: "host", value: host }],
@@ -51,7 +51,7 @@ const nextConfig: NextConfig = {
       },
       {
         // Preview hosts (Arena sandbox, Vercel previews) must never be indexed —
-        // the canonical host is propertiespak.com, and preview copies of pages
+        // the canonical host is dha.wordbitx.pk, and preview copies of pages
         // would otherwise compete with it in search results.
         source: "/:path*",
         has: [{ type: "host", value: "(.*\\.e2b\\.app|.*\\.vercel\\.app|property\\.wordbitxtech\\.com|www\\.property\\.wordbitxtech\\.com)" }],
