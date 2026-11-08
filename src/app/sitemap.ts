@@ -72,7 +72,7 @@ function uniqueCanonicalUrls(entries: MetadataRoute.Sitemap): MetadataRoute.Site
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const base: MetadataRoute.Sitemap = STATIC_ROUTES.map((route) => ({
-    url: `${SITE.url}${route.path === "/" ? "" : route.path}`,
+    url: `${SITE.url}${route.path}`,
     changeFrequency: route.changeFrequency,
     priority: route.priority,
   }));

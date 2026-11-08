@@ -28,7 +28,7 @@ const WORDBITX_PORTALS: Portal[] = [
   {
     name: "Properties Pak",
     sector: "Real estate",
-    domain: "propertiespak.com",
+    domain: "dha.wordbitx.pk",
     url: "/",
     copy: "Pakistan's property marketplace for sale, rent, new projects, commercial space and verified dealers.",
     current: true,
@@ -266,7 +266,7 @@ export default async function AboutPage() {
             </p>
             <h2 className="display-3 mt-3 text-navy-900">Properties Pak in one paragraph</h2>
             <p className="lede mt-4">
-              Properties Pak (propertiespak.com) is a Pakistan property marketplace operated by {SITE.company} from Lahore. It
+              Properties Pak (dha.wordbitx.pk) is a Pakistan property marketplace operated by {SITE.company} from Lahore. It
               brings together reviewed sale and rental listings, verified dealers, new projects, society maps, a shopping-mall
               directory, a property price index and free calculators for buyers, tenants, owners and overseas Pakistanis — in
               English and Urdu.

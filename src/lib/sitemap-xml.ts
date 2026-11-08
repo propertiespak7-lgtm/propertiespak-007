@@ -18,7 +18,7 @@ function escapeXml(value: string): string {
 
 export function absoluteUrl(path: string): string {
   if (/^https?:\/\//.test(path)) return path;
-  return `${SITE.url}${path === "/" ? "" : path.startsWith("/") ? path : `/${path}`}`;
+  return `${SITE.url}${path.startsWith("/") ? path : `/${path}`}`;
 }
 
 export function renderUrlSet(entries: SitemapEntry[]): string {

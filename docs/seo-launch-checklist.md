@@ -1,6 +1,6 @@
 # Properties Pak — SEO & launch checklist
 
-Domain: **https://propertiespak.com** (canonical apex host; `www` and the old
+Domain: **https://dha.wordbitx.pk** (canonical apex host; `www` and the old
 legacy property hosts 301 to it in production — see `next.config.ts`).
 
 Everything in **Part 1** is already implemented in this repository. **Part 2** is
@@ -13,7 +13,7 @@ Profile, content, backlinks) — that is where the ranking actually comes from.
 
 | Area | What is in place | Where |
 | --- | --- | --- |
-| Canonical host | Apex `propertiespak.com` is the canonical; `www` and the legacy property hosts redirect with 301 (production only) | `next.config.ts` → `redirects()` |
+| Canonical host | Apex `dha.wordbitx.pk` is the canonical; `www` and the legacy property hosts redirect with 301 (production only) | `next.config.ts` → `redirects()` |
 | Canonical tags | Self-referencing `<link rel="canonical">` on every page, absolute and https | `src/lib/seo.ts` → `buildMetadata()` |
 | Titles | Explicit, keyword-first titles; template `%s \| Properties Pak` | `src/app/layout.tsx`, page `metadata` exports |
 | Meta description | Unique per page, written for click-through, 150–160 chars | every page's `buildMetadata({ description })` |
@@ -32,10 +32,10 @@ Profile, content, backlinks) — that is where the ranking actually comes from.
 ### Verify it yourself
 
 ```bash
-curl -s https://propertiespak.com/robots.txt
-curl -s https://propertiespak.com/sitemap-index.xml | head
-curl -s https://propertiespak.com/ | grep -o '<link rel="canonical"[^>]*>'
-curl -s "https://propertiespak.com/api/og?title=Houses%20for%20Sale%20in%20Lahore" -o card.png
+curl -s https://dha.wordbitx.pk/robots.txt
+curl -s https://dha.wordbitx.pk/sitemap-index.xml | head
+curl -s https://dha.wordbitx.pk/ | grep -o '<link rel="canonical"[^>]*>'
+curl -s "https://dha.wordbitx.pk/api/og?title=Houses%20for%20Sale%20in%20Lahore" -o card.png
 ```
 
 Rich results: paste any listing, project or guide URL into
@@ -47,14 +47,14 @@ Rich results: paste any listing, project or guide URL into
 ## Part 2 — Do these in week 1 (account level)
 
 1. **DNS + host**
-   - Point `propertiespak.com` and `www` at Vercel; set the apex as the primary
+   - Point `dha.wordbitx.pk` and `www` at Vercel; set the apex as the primary
      domain so Vercel does not add its own redirect in the wrong direction.
    - Confirm HTTPS works on both, then enable HSTS in Vercel (Project → Settings
      → Domains → HTTPS).
 2. **Google Search Console**
-   - Add a **Domain property** for `propertiespak.com` (DNS TXT verification) —
+   - Add a **Domain property** for `dha.wordbitx.pk` (DNS TXT verification) —
      this covers `www`, `http` and any future subdomain in one go.
-   - Submit `https://propertiespak.com/sitemap-index.xml`.
+   - Submit `https://dha.wordbitx.pk/sitemap-index.xml`.
    - Set the international target to Pakistan (`en-PK`) and enable email alerts.
 3. **Bing Webmaster Tools** — import the property from Search Console (one click),
    submit the same sitemap index.

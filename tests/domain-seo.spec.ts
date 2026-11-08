@@ -2,7 +2,7 @@ import { test, expect } from "@playwright/test";
 import { SITE } from "../src/lib/constants";
 
 // Keep the portal's explicitly preserved DHA host out of this company-domain check.
-const OLD_DOMAIN = /wordbitxtech\.com|(?<!dha\.)wordbitx\.pk/i;
+const OLD_DOMAIN = /propertiespak\.com|wordbitxtech\.com|(?<!dha\.)wordbitx\.pk/i;
 const CANONICAL_PATHS = ["/", "/about", "/contact", "/sample", "/samples", "/admin/login", "/properties/for-sale"];
 
 test("WordbitX links, email, sitemap and canonical URLs use the current domains", async ({ request }) => {
@@ -17,16 +17,21 @@ test("WordbitX links, email, sitemap and canonical URLs use the current domains"
     const canonicalTag = html.match(/<link\b[^>]*rel="canonical"[^>]*>/i)?.[0];
     expect(canonicalTag, `missing canonical on ${path}`).toBeTruthy();
     const canonical = canonicalTag?.match(/\bhref="([^"]+)"/i)?.[1];
-    const expectedUrl = `${SITE.url}${path === "/" ? "" : path}`;
+    const expectedUrl = `${SITE.url}${path}`;
     expect(canonical).toBe(expectedUrl);
     expect(canonical).toMatch(/^https:\/\//);
 
     const openGraphTag = html.match(/<meta\b[^>]*property="og:url"[^>]*>/i)?.[0];
     expect(openGraphTag, `missing og:url on ${path}`).toBeTruthy();
-    expect(openGraphTag).toContain(`content="${expectedUrl}"`);
+    expect(openGraphTag).toContain(`content="${path === "/" ? SITE.url : expectedUrl}"`);
+
+    for (const property of path === "/" ? ["og:image", "twitter:image"] : []) {
+      const imageTag = html.match(new RegExp(`<meta\\b[^>]*(?:property|name)="${property}"[^>]*>`, "i"))?.[0];
+      expect(imageTag, `missing ${property} on ${path}`).toContain(`content="${SITE.url}/`);
+    }
 
     for (const match of html.matchAll(/\bhref="([^"]+)"/gi)) {
-      if (/wordbitx\.com/i.test(match[1])) wordbitxLinks.add(match[1]);
+      if (/^https:\/\/wordbitx\.com/i.test(match[1])) wordbitxLinks.add(match[1]);
     }
   }
 
@@ -40,7 +45,7 @@ test("WordbitX links, email, sitemap and canonical URLs use the current domains"
   const locations = Array.from(sitemap.matchAll(/<loc>([^<]+)<\/loc>/g), (match) => match[1]);
   expect(locations.length).toBeGreaterThan(0);
   for (const location of locations) {
-    expect(location).toMatch(/^https:\/\/propertiespak\.com(?:\/|$)/);
+    expect(location).toMatch(/^https:\/\/dha\.wordbitx\.pk\//);
   }
 
   const robotsResponse = await request.get("/robots.txt");

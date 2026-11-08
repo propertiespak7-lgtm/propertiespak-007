@@ -21,9 +21,9 @@ environment variables, and what happens in the database.
    organisation's members to sign in).
 5. Fill in the required fields:
    - **App name** — `Properties Pak`
-   - **User support email** — `info@propertiespak.com`
-   - **App domain** — `https://propertiespak.com`
-   - **Developer contact information** — `info@propertiespak.com`
+   - **User support email** — `info@wordbitx.com`
+   - **App domain** — `https://dha.wordbitx.pk`
+   - **Developer contact information** — `info@wordbitx.com`
 6. On the **Scopes** screen add only these two non-sensitive scopes:
    - `openid`
    - `.../auth/userinfo.email`
@@ -49,7 +49,7 @@ environment variables, and what happens in the database.
 5. Under **Authorised redirect URIs**, add **exactly**:
 
    ```
-   https://propertiespak.com/api/auth/google/callback
+   https://dha.wordbitx.pk/api/auth/google/callback
    ```
 
    For local development, add a second entry:
@@ -83,7 +83,7 @@ Locally, add these to `.env.local`:
 GOOGLE_CLIENT_ID=1234567890-abcdef.apps.googleusercontent.com
 GOOGLE_CLIENT_SECRET=GOCSPX-your-secret-here
 # Optional. Leave unset to derive the URI from the request host.
-# GOOGLE_REDIRECT_URI=https://propertiespak.com/api/auth/google/callback
+# GOOGLE_REDIRECT_URI=https://dha.wordbitx.pk/api/auth/google/callback
 ```
 
 On Vercel, add the same keys under **Project → Settings → Environment
